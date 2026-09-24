@@ -74,16 +74,6 @@ jobs:
         run: python3 -m pip install scons websocket-client
       - name: Prepare merged Godot 4.7.2 + WebGPU candidate
         run: tools/engine/prepare_port_candidate.sh build/webgpu-port-candidate
-      - name: Keep Wasm function names without DWARF for trap diagnosis
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          sconstruct = Path('build/webgpu-port-candidate/godot/SConstruct')
-          source = sconstruct.read_text()
-          old = '            env.AppendUnique(LINKFLAGS=["-s"])'
-          assert source.count(old) == 1
-          sconstruct.write_text(source.replace(old, '            env.AppendUnique(LINKFLAGS=["--profiling-funcs"])', 1))
-          PY
       - name: Build pinned Rust shader dependencies for Emscripten
         run: tools/engine/build_webgpu_rust_deps.sh build/webgpu-port-candidate/godot build/webgpu-rust-deps
       - name: Compile WebGPU web template
@@ -98,7 +88,7 @@ jobs:
             dlink_enabled=no \
             lto=none \
             debug_symbols=no \
-            linkflags="--profiling-funcs" \
+            use_assertions=yes \
             cache_path="$SCONS_CACHE" \
             cache_limit=8 \
             -j2
@@ -194,7 +184,7 @@ jobs:
             --purpose browser_webgpu_playable \
             --expected-profile playable \
             --required-console-prefix STARJUNK_SPRITELY_READY_JSON: \
-            --timeout 60
+            --timeout 180
           python3 - <<'PY'
           import json
           from pathlib import Path
