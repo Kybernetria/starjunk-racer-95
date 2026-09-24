@@ -87,7 +87,9 @@ jobs:
             webgpu_backend=emdawnwebgpu \
             dlink_enabled=no \
             lto=none \
-            debug_symbols=yes \
+            debug_symbols=no \
+            linkflags="--profiling-funcs" \
+            use_assertions=yes \
             cache_path="$SCONS_CACHE" \
             cache_limit=8 \
             -j2
