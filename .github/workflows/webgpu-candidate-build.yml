@@ -87,7 +87,7 @@ jobs:
             webgpu_backend=emdawnwebgpu \
             dlink_enabled=no \
             lto=none \
-            debug_symbols=no \
+            debug_symbols=yes \
             cache_path="$SCONS_CACHE" \
             cache_limit=8 \
             -j2
@@ -103,7 +103,7 @@ jobs:
         run: find build/webgpu-port-candidate/godot/bin -maxdepth 1 -type f -printf '%f %s bytes\n' 2>/dev/null | sort || true
       - uses: actions/upload-artifact@v4
         with:
-          name: godot-4.7.2-webgpu-template
+          name: godot-4.7.2-webgpu-template-debug
           path: build/webgpu-port-candidate/godot/bin/godot.web.template_release.wasm32.nothreads.zip
           if-no-files-found: error
       - name: Download upstream Godot editor for export
